@@ -37,7 +37,6 @@ exports.login = (req, res, next) => {
               )
             });
           })
-          .then(() => res.json({token}))
           .catch(error => res.status(500).json({ error }));
       })
       .catch(error => res.status(500).json({ error }));
