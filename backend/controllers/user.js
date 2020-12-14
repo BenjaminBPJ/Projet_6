@@ -18,7 +18,7 @@ exports.signup = (req, res, next) => {
       })
       .catch(error => res.status(500).json({ error }));      
   } else {
-    return res.status(404).json({ message: 'Votre adresse mail doit être correcte et votre mot de passe doit contenir au moins un chiffre, une minuscule, une majuscule et être composé de 8 caractères minimum !' });
+    return res.status(401).json({ message: 'Votre adresse mail doit être correcte et votre mot de passe doit contenir au moins un chiffre, une minuscule, une majuscule et être composé de 8 caractères minimum !' });
   };
 }
 
@@ -43,7 +43,7 @@ exports.login = (req, res, next) => {
             )
           });
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => res.status(500).json({ message : `Entrez votre Email et votre mot de passe` }));
     })
     .catch(error => res.status(500).json({ error }));
 };

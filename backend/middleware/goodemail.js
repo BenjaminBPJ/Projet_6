@@ -1,7 +1,7 @@
 module.exports = {
     goodEmail : function (input) {
-    const regex = new RegExp(`^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,3})$`);
-    return regex.test(input);
-}
+        const regex = new RegExp(`^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$`);
+        return regex.test(input);
+    }
 }
 
