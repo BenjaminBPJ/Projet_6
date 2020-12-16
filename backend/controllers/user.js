@@ -5,7 +5,15 @@ const passwordIsValide = require('../middleware/goodpassword')
 const emailIsValide = require('../middleware/goodemail')
 
 exports.signup = (req, res, next) => {
-  if (emailIsValide.goodEmail(req.body.email) && passwordIsValide.goodPassword(req.body.password)) {
+  if(!emailIsValide.goodEmail(req.body.email) && !passwordIsValide.goodPassword(req.body.password)){
+    return res.status(401).json({ message: 'Votre adresse mail doit être correcte et votre mot de passe doit contenir au moins un chiffre, une minuscule, une majuscule et être composé de 8 caractères minimum !  ' });
+  }
+  if (!emailIsValide.goodEmail(req.body.email)){
+    return res.status(401).json({ message: 'Votre adresse mail doit être correcte ' });
+  }
+  if(!passwordIsValide.goodPassword(req.body.password)){
+    return res.status(401).json({ message: 'Votre mot de passe doit contenir au moins un chiffre, une minuscule, une majuscule et être composé de 8 caractères minimum !' });
+  } 
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new User({
@@ -16,10 +24,7 @@ exports.signup = (req, res, next) => {
           .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
           .catch(() => res.status(400).json({ message: `Cet utilisateur existe déjà` }));
       })
-      .catch(error => res.status(500).json({ error }));      
-  } else {
-    return res.status(401).json({ message: 'Votre adresse mail doit être correcte et votre mot de passe doit contenir au moins un chiffre, une minuscule, une majuscule et être composé de 8 caractères minimum !' });
-  };
+      .catch(error => res.status(500).json({ error }));       
 }
 
 exports.login = (req, res, next) => {
