@@ -71,7 +71,7 @@ exports.likeOrDislike = (req, res, next) => {
                     res.status(403).json({ error: 'Impossible de liker deux fois la même sauce' });
                 }
                 if (usersDisliked.includes(userId)) { // Si deja liké on envoie une erreur json
-                    res.status(403).json({ error: 'Impossible de liker si on dislike la même sauce' });
+                    res.status(403).json({ error: 'Impossible de liker si on dislike deja la sauce' });
                 } else { // Sinon, on ajoute un like
                     Sauce.findOne({ _id: sauceId })
                         .then((sauce) => {
@@ -92,7 +92,7 @@ exports.likeOrDislike = (req, res, next) => {
                     res.status(403).json({ error: 'Impossible de disliker deux fois la même sauce' })
                 }
                 if (usersLiked.includes(userId)) { // Si deja liké on envoie une erreur json
-                    res.status(403).json({ error: 'Impossible de disliker si on like la même sauce' });
+                    res.status(403).json({ error: 'Impossible de disliker si on like deja la sauce' });
                 } else { // sinon on ajoute un dislike
                     Sauce.findOne({ _id: sauceId })
                         .then((sauce) => {
