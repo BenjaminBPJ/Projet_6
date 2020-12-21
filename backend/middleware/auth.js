@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const sauces = require('../models/sauces');
 
 module.exports = (req, res, next) => {
   try {
@@ -9,6 +10,7 @@ module.exports = (req, res, next) => {
       throw 'Invalid user ID';
     } else {
       next();
+      console.log(req.body.userId);
     }
   } catch {
     res.status(401).json({ message : 'Token invalide'});
