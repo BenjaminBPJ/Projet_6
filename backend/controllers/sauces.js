@@ -20,27 +20,37 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-    const sauceObject = req.file ?
-        {
-            ...JSON.parse(req.body.sauce),
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        } : { ...req.body };
-    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
-        .catch(error => res.status(400).json({ message: `Impossible de modifier cette sauce` }));
-};
+    Sauce.findOne({ _id: req.params.id })
+        .then(sauce=> {
+            if (sauce.userId === req.userIdAuth){
+                const sauceObject = req.file ?
+                {
+                    ...JSON.parse(req.body.sauce),
+                    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                } : { ...req.body };
+            Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
+                .catch(error => res.status(400).json({ message: `Impossible de modifier cette sauce` }));
+            }else{
+                res.status(403).json({ message: `Vous n'avez pas les droits pour modifier cette sauce` });
+            };
+        });
+}
 
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
-            const filename = sauce.imageUrl.split('/images/')[1];
-            fs.unlink(`images/${filename}`, () => {
-                Sauce.deleteOne({ _id: req.params.id })
-                    .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
-                    .catch(error => res.status(400).json({ message: `Impossible de supprimer cette sauce` }));
-            });
-        })
-        .catch(error => res.status(400).json({ error: 'Impossible de supprimer cette sauce' }));
+            if (sauce.userId === req.userIdAuth){
+                const filename = sauce.imageUrl.split('/images/')[1];
+                fs.unlink(`images/${filename}`, () => {
+                    Sauce.deleteOne({ _id: req.params.id })
+                        .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
+                        .catch(error => res.status(400).json({ message: `Impossible de supprimer cette sauce` }));
+                });
+            }else{
+                res.status(403).json({ message: `Vous n'avez pas les droits pour modifier cette sauce` });
+            };
+        });
 };
 
 exports.getAllSauces = (req, res, next) => {
