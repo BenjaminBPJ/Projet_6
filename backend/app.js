@@ -6,7 +6,9 @@ const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 const path = require('path');
 
-mongoose.connect('mongodb+srv://projet6:piquante@cluster0.0vbzf.mongodb.net/projet6?retryWrites=true&w=majority',
+require ('dotenv/config');
+mongoose.connect(
+    process.env.DB_CONNECTION,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
