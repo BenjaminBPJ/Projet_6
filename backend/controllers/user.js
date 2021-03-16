@@ -40,7 +40,6 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
   const encrypt = crypto.HmacSHA256(req.body.email, process.env.ENCRYPT_EMAIL).toString();
-  console.log(decrypt)
   console.log(encrypt)
   User.findOne({ email: encrypt })
     .then(user => {
