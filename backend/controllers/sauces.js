@@ -1,16 +1,22 @@
 const Sauce = require('../models/sauces');
 const fs = require('fs');
+const user = require('../models/user');
 
 exports.createSauce = (req, res, next) => {
-    const sauceObject = JSON.parse(req.body.sauce);
-    delete sauceObject._id;
-    const sauce = new Sauce({
-        ...sauceObject,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    });
-    sauce.save()
-        .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
-        .catch(error => res.status(400).json({ message: `Impossible de créer cette sauce` }));
+    //if(req.body.heat >= 0 && req.body.heat <= 10){
+        const sauceObject = JSON.parse(req.body.sauce);
+        delete sauceObject._id;
+        const sauce = new Sauce({
+            ...sauceObject,
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        });
+        sauce.save()
+            .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
+            .catch(error => res.status(400).json({ message: `Impossible de créer cette sauce` }));
+    //}else{
+       // res.status(403).json({ message: `la note doit être comprise entre 1 et 10` });
+    //}
+
 };
 
 exports.getOneSauce = (req, res, next) => {
@@ -20,6 +26,7 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
+    //if(req.body.heat >= 0 && req.body.heat <= 10){
     Sauce.findOne({ _id: req.params.id })
         .then(sauce=> {
             if (sauce.userId === req.userIdAuth){
@@ -38,7 +45,10 @@ exports.modifySauce = (req, res, next) => {
                 res.status(403).json({ message: `Vous n'avez pas les droits pour modifier cette sauce` });
             };
         });
-}
+    //}else{
+        //res.status(403).json({ message: `la note doit être comprise entre 1 et 10` });
+    //};
+};
 
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
