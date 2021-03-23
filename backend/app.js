@@ -29,6 +29,6 @@ app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
 app.use('*',(req, res) => { 
     res.status(400).json({error:`Cette route n'existe pas`});
-})
+});
 
 module.exports = app;

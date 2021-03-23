@@ -3,7 +3,7 @@ const fs = require('fs');
 const user = require('../models/user');
 
 exports.createSauce = (req, res, next) => {
-    //if(req.body.heat >= 0 && req.body.heat <= 10){
+    if (req.body.sauce.heat >= 0 && req.body.sauce.heat <= 10) {
         const sauceObject = JSON.parse(req.body.sauce);
         delete sauceObject._id;
         const sauce = new Sauce({
@@ -13,10 +13,9 @@ exports.createSauce = (req, res, next) => {
         sauce.save()
             .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
             .catch(error => res.status(400).json({ message: `Impossible de créer cette sauce` }));
-    //}else{
-       // res.status(403).json({ message: `la note doit être comprise entre 1 et 10` });
-    //}
-
+    } else {
+        res.status(403).json({ message: `la note doit être comprise entre 0 et 10` });
+    };
 };
 
 exports.getOneSauce = (req, res, next) => {
@@ -26,42 +25,38 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-    //if(req.body.heat >= 0 && req.body.heat <= 10){
     Sauce.findOne({ _id: req.params.id })
-        .then(sauce=> {
-            if (sauce.userId === req.userIdAuth){
+        .then(sauce => {
+            if (sauce.userId === req.userIdAuth) {
                 const filename = sauce.imageUrl.split('/images/')[1];
                 const sauceObject = req.file ?
-                {
-                    ...JSON.parse(req.body.sauce),
-                    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-                } : { ...req.body };
+                    {
+                        ...JSON.parse(req.body.sauce),
+                        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                    } : { ...req.body };
                 fs.unlink(`images/${filename}`, () => {
-            Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-                .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
-                .catch(error => res.status(400).json({ message: `Impossible de modifier cette sauce` }));
+                    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                        .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
+                        .catch(error => res.status(400).json({ message: `Impossible de modifier cette sauce` }));
                 });
-            }else{
+            } else {
                 res.status(403).json({ message: `Vous n'avez pas les droits pour modifier cette sauce` });
             };
         });
-    //}else{
-        //res.status(403).json({ message: `la note doit être comprise entre 1 et 10` });
-    //};
 };
 
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
-            if (sauce.userId === req.userIdAuth){
+            if (sauce.userId === req.userIdAuth) {
                 const filename = sauce.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
                     Sauce.deleteOne({ _id: req.params.id })
                         .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
                         .catch(error => res.status(400).json({ message: `Impossible de supprimer cette sauce` }));
                 });
-            }else{
-                res.status(403).json({ message: `Vous n'avez pas les droits pour modifier cette sauce` });
+            } else {
+                res.status(403).json({ message: `Vous n'avez pas les droits pour supprimer cette sauce` });
             };
         });
 };
@@ -73,10 +68,10 @@ exports.getAllSauces = (req, res, next) => {
                 res.status(200).json({ message: `Aucune sauce pour le moment` });
             } else {
                 res.status(200).json(sauces);
-            }
+            };
         })
         .catch(() => { res.status(400).json({ message: `Les sauces sont indisponibles` }); });
-}
+};
 
 exports.likeOrDislike = (req, res, next) => {
     const sauce = Sauce.findOne({ _id: req.params.id })
@@ -157,5 +152,5 @@ exports.likeOrDislike = (req, res, next) => {
                     .catch((error) => { res.status(500).json({ error }); });
         })
         .catch(error => res.status(500).json({ error: 'Problème, impossible de liker' }));
-}
+};
 

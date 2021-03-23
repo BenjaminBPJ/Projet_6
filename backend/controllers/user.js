@@ -36,11 +36,10 @@ exports.signup = (req, res, next) => {
         .catch(() => res.status(400).json({ message: `Cet utilisateur existe déjà` }));
     })
     .catch(error => res.status(500).json({ error: 'test' }));
-}
+};
 
 exports.login = (req, res, next) => {
   const encrypt = crypto.HmacSHA256(req.body.email, process.env.ENCRYPT_EMAIL).toString();
-  console.log(encrypt)
   User.findOne({ email: encrypt })
     .then(user => {
       if (!user) {

@@ -4,4 +4,4 @@ module.exports = {
         const regex = new RegExp(`^(?=.{8,})(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9]).*$`,`g`);
         return regex.test(input);
     }
-}
+};
