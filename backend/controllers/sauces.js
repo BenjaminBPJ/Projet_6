@@ -3,7 +3,6 @@ const fs = require('fs');
 const user = require('../models/user');
 
 exports.createSauce = (req, res, next) => {
-    if (req.body.sauce.heat >= 0 && req.body.sauce.heat <= 10) {
         const sauceObject = JSON.parse(req.body.sauce);
         delete sauceObject._id;
         const sauce = new Sauce({
@@ -13,9 +12,6 @@ exports.createSauce = (req, res, next) => {
         sauce.save()
             .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
             .catch(error => res.status(400).json({ message: `Impossible de créer cette sauce` }));
-    } else {
-        res.status(403).json({ message: `la note doit être comprise entre 0 et 10` });
-    };
 };
 
 exports.getOneSauce = (req, res, next) => {
